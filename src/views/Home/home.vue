@@ -18,23 +18,23 @@
           </div>
           <div class="icon-search">
               <div>
-                   <img src="@/assets/magnifying-glass.svg" alt="" id="show-btn" @click="$bvModal.show('bv-modal-example')">
-                  <b-modal id="bv-modal-example" hide-footer>
-                    <template v-slot:modal-title>
+                   <img src="@/assets/magnifying-glass.svg" id="show-btn" @click="$bvModal.show('bv-modal-example')">
+                  <b-modal id="bv-modal-example" hide-footer >
+                    <template v-slot:modal-title style="border: 10px solid black;">
                       <h2> Product <code> Search</code> </h2>
                     </template>
-                    <div class="d-block text-center">
+                    <div class=" text-center">
                          <b-form-group>
-                            <b-input v-model="search" placeholder="Search Product" style="margin-bottom:1.2em;margin-top:1em;"></b-input>
+                            <b-input v-model="search"  placeholder="Search Product" style="margin-bottom:1em;margin-top:1em;"></b-input>
                               <b-form-radio-group
                                 v-model="radio"
                                 :options="optionRadio"
                                 name="radio-inline"
-                                style="margin-bottom:5em;"
+                                style="margin-bottom:2em;"
                               ></b-form-radio-group>
                         </b-form-group>
                     </div>
-                    <b-button class="mt-3" variant="outline-primary" block @click="$bvModal.hide('bv-modal-example')">Search</b-button>
+                    <b-button class="mt-3" variant="primary" block @click="$bvModal.hide('bv-modal-example')">Search</b-button>
                   </b-modal>
             </div>
           </div>
@@ -43,40 +43,45 @@
       <div class="wrapper" id="header-cart">
           <div class="header-cart">
             <div class="title-cart">
-              <h2>Cart <span> {{ counter }} </span></h2>
+              <h2>Cart <span> {{ listCHart.length }} </span></h2>
             </div>
           </div>
       </div>
+      <!-- header cart -->
       <div class="wrapper" id="cart" >
           <div class="cart-customer">
-            <div class="cart" v-if="counter == 0">
-              <img src="@/assets/food-and-restaurant.png">
+            <div v-if="listCHart.length == 0">
+                <div class="cart">
+                  <img src="@/assets/food-and-restaurant.png">
+                </div>
+                <div class="desc-cart" v-if="listCHart.length == 0">
+                  <h2>You cart is empty</h2>
+                  <p>Please add some items from the menu</p>
+                </div>
             </div>
-            <div class="cart" v-if="counter >= 1" hidden>
-              <img src="@/assets/food-and-restaurant.png">
+            <div  v-if="listCHart.length >= 1" hidden>
+                <div class="cart">
+                  <img src="@/assets/food-and-restaurant.png">
+                </div>
+                <div class="desc-cart" v-if="listCHart.length >= 1" hidden>
+                  <h2>You cart is empty</h2>
+                  <p>Please add some items from the menu</p>
+                </div>
             </div>
-            <div class="desc-cart" v-if="counter == 0">
-              <h2>You cart is empty</h2>
-              <p>Please add some items from the menu</p>
-            </div>
-            <div class="desc-cart" v-if="counter >= 1" hidden>
-              <h2>You cart is empty</h2>
-              <p>Please add some items from the menu</p>
-            </div>
-            <!-- button -->
-            <div>
-              <img :src="image" alt="image-product">
-              <h3> {{namemenus}} </h3>
-               <b-button-group id="UpDown"  v-if="counter >= 1 && value >= 1">
-                <b-button variant="success" style="font-weight: 900;" v-on:click = 'value -= 1'>-</b-button>
-                <div class="form-control total" value ="1" > {{ value }} </div>
-                <b-button variant="success" style="font-weight: 900;" v-on:click = 'value += 1'>+</b-button>
-              </b-button-group>
-              <p> {{ pricemenus }}</p>
-              </div>
+              <!-- cart  -->
+              <div class="wrapper-cart" v-for="items in listCHart" :key="items">
+                  <img :src="items.image" id="cart-img" class="img-thumbnail">
+                  <h4> {{items.name}} </h4>
+                  <b-button-group>
+                      <b-button variant="success" style="font-weight: 900;" v-on:click = 'value -= 1'>-</b-button>
+                      <div class="form-control total" value ="1" > {{ value }} </div>
+                      <b-button variant="success" style="font-weight: 900;" v-on:click = 'value += 1'>+</b-button>
+                  </b-button-group>
+                  <p> {{ items.price }}</p>
+              </div> 
           </div> 
       </div>
- 
+      <!-- s -->
       <div class="wrapper" id="sidebar">
          <div class="sidebar">
           <div class="sidebar-action">
@@ -86,11 +91,36 @@
             <div class="icon-history">
               <img src="@/assets/clipboard.png"> <span>History</span>
             </div>
+            <div>
+                <img src="@/assets/add.svg" @click="$bvModal.show('CRUD')" >
  
-            <!-- modal Add Data -->
-            <div class="icon-add" id="show-btn" @click="$bvModal.show('bv-modal-AddData')">
-              <img src="@/assets/add.svg">
-              <form>
+                <b-modal id="CRUD" hide-footer header-border-variant="primary">
+                  <template v-slot:modal-title>
+                    <h3> "LeBlanc Cafe" <code>SETUP</code> </h3>
+                  </template>
+                  <div class="d-block text-center">
+                    <h2>Hello welcome back! </h2> <br>  <p style="float:left;"> What do you want?</p>
+                  </div>
+                  <b-button variant="primary" class="mt-3" block @click="$bvModal.show('bv-modal-AddData')"> <h5>ADD PRODUCT</h5></b-button>     
+                   <b-button variant="outline-primary" class="mt-3" block @click="$bvModal.show('bv-modal-UpdateData')"> <h5>UPDATE PRODUCT</h5> </b-button> 
+                    <b-button variant="outline-primary" class="mt-3" block @click="$bvModal.show('bv-modal-DeleteData')"><h5>DELETE PRODUCT</h5> </b-button> 
+                </b-modal>
+            </div>        
+          </div>
+        </div>
+      </div>
+      <!-- GET PRODUCT -->
+      <b-row id="row">
+       <div id="product"  v-for="data in product" :key="data.id"
+            v-on:click= "addCart(data)"> 
+                <Product
+                    :images="data.image"
+                    :names="data.name"
+                    :price="data.price"
+                />
+        </div>
+      </b-row>
+              <!-- modal Add Data -->
               <b-modal  id="bv-modal-AddData" size="lg" header-bg-variant="primary" header-text-variant="white" header-border-variant="dark"
               footer-border-variant="dark">
                   <template v-slot:modal-title>
@@ -126,23 +156,64 @@
                         </b-form-select> 
                   </div>
               </div>
-              </b-modal>      
-              </form>     
-            </div>
-          </div>
-        </div>
-      </div>
-      <b-row id="row">
-       <div id="product"  v-for="data in product" :key="data.id">
-            <!-- v-on:click=" image = data.image, pricemenus = data.price, namemenus = data.name, counter += 1"> -->
-                <Product
-                    :images="data.image"
-                    :names="data.name"
-                    :price="data.price"
-                />
-        </div>
-      </b-row>
+              </b-modal>
+               <!-- MODAL UPDATE PRODUCT  -->
+               <b-modal  id="bv-modal-UpdateData" size="lg" header-bg-variant="primary" header-text-variant="white" header-border-variant="dark"
+              footer-border-variant="dark">
+                  <template v-slot:modal-title>
+                        <h2>Update Product </h2>
+                  </template>
+                  <template v-slot:modal-footer>
+                      <b-button variant="outline-danger" @click="clean"> <h5>Cancel</h5></b-button>
+                      <b-button variant="primary" style="width:16em; margin:0 25px 0 15px;" @click="Update"><h5 style="font-weight:700;">Update</h5></b-button>
+                  </template>
  
+                  <div class="modal-body">
+                    <div class="input-group" id="input2" style="width: 40%; float:right; border:1px solid black; border-radius:5%;">
+                         <div class="custom-file">
+                           <b-form-input v-model="update.id" placeholder="type id product"> </b-form-input>
+                         </div>
+                         <div class="input-group-append">
+                           <button class="btn btn-outline-primary" type="button" @click="searchID" >Search</button>      
+                         </div>
+                       </div> 
+                    <h5 style="margin-top: 40px;">Name</h5>
+                    <b-form-input v-model="update.name" id="input2" placeholder="name product"> </b-form-input>
+                    <h5 style="margin-top:18px;">Price</h5>
+                    <div class="input-group mb-3" id="input3">
+                         <div class="input-group-prepend">
+                           <span class="input-group-text">Rp.</span>
+                         </div>
+                         <b-form-input v-model="update.price" placeholder="entry price product"> </b-form-input>
+                       </div>
+                    <h5 style="margin-top:18px;">Image</h5>
+                    <div class="input-group" id="input2">
+                         <div class="custom-file">
+                           <input v-model="update.image" type="text" class="form-control" placeholder="link url-image">
+                         </div>
+                         <div class="input-group-append">
+                           <button class="btn btn-outline-primary" type="button">OK! </button>      
+                         </div>
+                       </div>
+                    <h5 style="margin-top:18px;">Category</h5>
+                    <div id="input4">
+                       <input v-model="update.category" type="text" class="form-control" placeholder="category id">
+                  </div>
+              </div>
+              </b-modal> 
+              <!-- MODAL DELETE PRODUCT -->
+                <b-modal id="bv-modal-DeleteData" hide-footer header-bg-variant="primary" header-text-variant="white" header-border-variant="dark">
+                  <template v-slot:modal-title>
+                    <h4>Delete Product</h4>
+                  </template>
+                  <div class="d-block text-center">
+                     <b-input-group prepend="ID" class="mt-3"> 
+                       <b-form-input v-model="deleteId">
+                       </b-form-input>
+                      </b-input-group>
+                  </div>
+                  <b-button variant="outline-danger" class="mt-3" block @click="Delete" style="width:15em;display:block; margin:20px auto;"> <h4> Delete </h4></b-button>
+                </b-modal>
   </div>
 </template>
  
@@ -158,13 +229,14 @@ export default {
   data(){
     return{
         product: [],
+        listCHart : [],
         search :  '',
         selected: null,
         options: [
           { value: null, text: 'Please select an category',disabled: true},
-          { value: 'Foods', text: 'Foods' },
-          { value: 'Drink', text: 'Drink' },
-          { value: 'Fast Food', text: 'Fast Food' },
+          { value: '1', text: 'Drink' },
+          { value: '2', text: 'Food' },
+          { value: '3', text: 'Fast Food' },
         ],
         radio: '',
         optionRadio: [
@@ -178,17 +250,20 @@ export default {
           price: '',
           image: '',
           category: ''
-        },
-        counter : 0, 
+        }, 
         value : 1,
-        image : '',
-        namemenus : '',
-        pricemenus : ''
+        update: {
+          id: "",
+          name: "",
+          price: "",
+          image: "",
+          category: ""
+        },
+        deleteId: "",
     }
   },
   mounted() {
-    this.load();
-    console.log(this.product);
+    this.load()
  
   },
   methods: {
@@ -200,29 +275,50 @@ export default {
         console.log(err)
       })
     },
-    addProduct(){
-      axios.get('http://localhost:8000/product')
-      .then(res => {
-        console.log(res.status);
-        alert("Success add new product");
-      })
-    },
     save(){
       axios.post('http://localhost:8000/product', this.form) 
       .then((res) => {
         alert('Product Sucessfully Saved!', res)
         this.load()
         this.form = []
-        return
+        this.clean()
       })
       .catch(err => {
         console.log(err)
       })
     },
-    clean(){
-      this.form=[]
-      this.$bvModal.hide('bv-modal-AddData')
+    Update(){ 
+        axios.put('http://localhost:8000/product', {
+          id: this.update.id,
+          name: this.update.name,
+          price: this.update.price,
+          category: this.update.category
+        })
+        .then((res) => {
+        alert('Product was Updated!', res)
+        this.load()
+        this.form = []
+        this.clean()
+      })
+      .catch(err => {
+        console.log(err)
+      })
     },
+    Delete(){
+      axios.delete('http://localhost:8000/product/delete/'+this.deleteId) 
+        .then(res => {
+          console.log(res)
+          alert("Success delete product")
+        })
+    },
+    clean(){
+      this.$bvModal.hide('bv-modal-AddData')
+      this.$bvModal.hide('bv-modal-UpdateData')
+    },
+    addCart(data){
+      this.listCHart.push(data)
+    },
+ 
     // computed: {
     //   filterdProduct : () => {
     //     return this.load.filter(() => {
@@ -340,5 +436,12 @@ export default {
   }
   #UpDown {
     margin-top: 2em;
+  }
+  .wrapper-cart {
+    display: flex;
+    flex-direction: row;
+  }
+  .wrapper-cart img {
+    width: 20px;
   }
 </style>
